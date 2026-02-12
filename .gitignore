@@ -1,7 +1,7 @@
 # Environments
 reddit_employ/
-venv/
-.venv/
+ENV/
+.env/
 
 # Secrets
 .env
