@@ -1,0 +1,14 @@
+# Environments
+reddit_employ/
+venv/
+.venv/
+
+# Secrets
+.env
+
+# Python build artifacts
+__pycache__/
+*.py[cod]
+
+# Data (Avoid pushing raw scrape data if it's too large)
+data/raw/
