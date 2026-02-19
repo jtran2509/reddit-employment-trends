@@ -1,8 +1,10 @@
 import requests
 import pandas as pd
+import numpy as np
 import time
 import json
 from datetime import datetime
+# Scrape dataset on every Monday
 
 #1. Target Subreddits
 subreddits =[
@@ -80,3 +82,4 @@ df.to_csv('data/raw/reddit_employment_master.csv', index=False)
 df.to_json('data/raw/reddit_employment_json', orient='records', indent=4)
 
 print(f'\n SUCCESS! Total posts collected: {len(df)}')
+
