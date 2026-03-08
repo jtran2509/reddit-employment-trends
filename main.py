@@ -73,7 +73,26 @@ def add_nlp_features(df):
     df['lang']
 
     # 2. Use spacy for English and Underthesea for Vietnamese
+    processed_text = []
 
+    for index, row in df.iterrows():
+        text = row['full_text']
+        lang = row['language']
+
+        if lang == "vi":
+            # Tackle Vietnamese using underthesea
+            clean_text = process_vietnamese(text)
+        else:
+            # Tackle English using Spacy
+            doc = nlp(text)
+            clean_text = " ".join([token.lemma_.lower()
+                                   for token in doc if not token.is_stop
+                                   and not token.is_punct])
+            
+        processed_text.append(clean_text)
+
+        df['nlp_processed_text'] = processed_text
+        return df
     # Sentimental Analysis
 
     return df
