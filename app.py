@@ -3,7 +3,6 @@ How to run: open Terminal & run `streamlit run app.py`
 Visualization purpose as well. 
 """
 
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -34,7 +33,7 @@ elif choice == "Immigration Insights":
     # Show bigrams (LMIA scam, support, etc.)
 
 # 4. Load dataset for analysis
-clean_df = pd.read_csv("processed/reddit_master_cleaned.csv")
+clean_df = pd.read_csv("./data/processed/reddit_master.csv")
 clean_df['date'] = pd.to_datetime(clean_df['created_utc']).dt.date # Make sure the date is formatted correctly
 
 min_date = clean_df['date'].min()
@@ -45,9 +44,8 @@ start_date, end_date = st.sidebar.slider(
     "Choose date Range for Analysis",
     min_value = min_date,
     max_value = max_date,
-    value = (max_date - timedelta(days=7), max_date) # Auto the closest 7 days
-    format="DD/MM/YY"
-)
+    value = (max_date - timedelta(days=7), max_date), # Auto the closest 7 days
+    format="DD/MM/YY")
 
 # Filter dataframe according to chosen date
 mask = (clean_df['date'] >= start_date) & (clean_df['date'] <= end_date)
@@ -59,3 +57,6 @@ st.write(f"Found **{len(df_filtered)}** posts during this time.")
 # Use df_filtered to plot the chart
 # Top 20 keywords for this week 
 
+# Top professional keywords mentioned in total post
+st.subheader("Industry & Occupation Insights")
+st.plotly_chart(fig, use_container_width=True)
