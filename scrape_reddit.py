@@ -44,8 +44,7 @@ def scrape_reddit_json(subreddit, post_limit=100):
                         'author': p.get('author'),
                         'score': p.get('score'),
                         'num_comments': p.get('num_comments'),
-                        'created_utc': datetime.fromtimestamp(p.get('created_utc')).strftime("%Y-%m-%d %H:%M:%S"),
-                        'url': p.get('url')
+                        'created_utc': datetime.fromtimestamp(p.get('created_utc')).strftime("%Y-%m-%d %H:%M:%S")
                     })
                 # Update 'after' to the ID of the last post to get the next page
                 after = data['data'].get('after')
@@ -76,8 +75,12 @@ for sub in subreddits:
 
 # 3. Save the results
 df = pd.DataFrame(master_data)
-#Save as CSV for easy viewing
-df.to_csv('data/raw/reddit_employment_master.csv', index=False)
+#Save newly scraped data with datetime for easy recognition
+today = datetime.now().strftime("%Y_%m_%d")
+filename = f"data/raw/new_scrape_{today}.csv"
+
+df.to_csv(filename, index=False)
+print(f"---Saved new data to {filename}")
 # Save as JSON for "Data Science" style processing later
 df.to_json('data/raw/reddit_employment_json', orient='records', indent=4)
 

@@ -1,4 +1,20 @@
 # Comprehensive Market Intelligence Dashboard
+## Purpose of the project
+
+## How it works
+Every Monday, when new data coming in:
+1. Read newly-scraped data
+2. Read the old `reddit_master`
+3. Combine the new dataset with the old dataset
+4. Remove duplicates: we might scrape the same old post from last week
+5. Save them as the new `reddit_master`
+
+## Tech Stacks
+
+## Improvement 
+- 
+
+
 
 ## Advantage of Textblob and VADER
 - Vader: optimized for social media but VADER tends to amplify polarity and often categorize too many posts as positives
@@ -24,15 +40,3 @@
 6. Raw Reddit explorer
 - Search bar
 - Filter by subreddits, keyword, city or scam flag
-
-**Scatter Plot** (Upvotes vs Number of Comments): xác định những chủ đề gây tranh cãi (debatable) hoặc được "quan tâm" nhất. Những bài ít vote nhưng nhiều cmmt thường là chủ đề gây tranh cãi.
-
-**Time Series Line chart (post Volume/Time)**: Theo dõi số lượng bài đăng theo tuần/tháng. Nếu có 1 đợt sóng bài đăng đột ngột, có thể do 1 chính sách mới vừa ra đời.
-
-
-**Heatmap** (Sentiment vs. Time of Day/Day of Week): xem thử liệu các bài đăng vào thứ 2 (khi scrape) thường mang tâm trạng gì so với các ngày khác.
-
-
-**Topic modelling visualization (LDAvis)**: nhóm các bài viết thành chủ đề tự động => Cho thấy các bong bóng chủ đều tách biệt nhau như thế nào
-
-Plot for hard skills likes: Python, SQL, Java, etc.
