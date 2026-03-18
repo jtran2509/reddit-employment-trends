@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reddit-dashboard-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: reddit-app
+  template:
+    metadata:
+      labels:
+        app: reddit-app
+    spec:
+      containers:
+      - name: reddit-container
+        image: jadetran9/reddit-dashboard:v1
+        ports:
+        - containerPort: 8501

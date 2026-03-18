@@ -4,6 +4,7 @@ import numpy as np
 import time
 import json
 from datetime import datetime
+import sqlite3
 # Scrape dataset on every Monday
 
 #1. Target Subreddits
@@ -41,7 +42,6 @@ def scrape_reddit_json(subreddit, post_limit=100):
                         'subreddit': subreddit,
                         'title': p.get('title'),
                         'selftext': p.get('selftext'),
-                        'author': p.get('author'),
                         'score': p.get('score'),
                         'num_comments': p.get('num_comments'),
                         'created_utc': datetime.fromtimestamp(p.get('created_utc')).strftime("%Y-%m-%d %H:%M:%S")
@@ -66,23 +66,42 @@ def scrape_reddit_json(subreddit, post_limit=100):
             break
     return all_posts
 
+
 # 2. Run the loop
 master_data =[]
 for sub in subreddits:
-    sub_data = scrape_reddit_json(sub, post_limit=200) # grab 2 pages per sub
+    sub_data = scrape_reddit_json(sub, post_limit=500) # grab 2 pages per sub
     master_data.extend(sub_data)
     time.sleep(5)
 
+
 # 3. Save the results
 df = pd.DataFrame(master_data)
+
+## Drop 'author' column to protect privacy.
+if "author" in df.columns:
+    df = df.drop(columns=['author'])
+
+# Add scrape_date column
+df['scrape_date'] = datetime.now().strftime("%Y-%m-%d")
+
 #Save newly scraped data with datetime for easy recognition
 today = datetime.now().strftime("%Y_%m_%d")
 filename = f"data/raw/new_scrape_{today}.csv"
-
 df.to_csv(filename, index=False)
-print(f"---Saved new data to {filename}")
-# Save as JSON for "Data Science" style processing later
-df.to_json('data/raw/reddit_employment_json', orient='records', indent=4)
+print(f"Save backup CSV safely at {filename}")
 
+# Connect and save to SQLite database
+db_path = "data/raw/reddit_employment.db"
+# Create a connection
+conn = sqlite3.connect(db_path)
+
+try:
+    df.to_sql("reddit_posts", conn, if_exists="append", index=False)
+    print(f"Successfully saved {len(df)} lines to database 'reddit_posts'.")
+except Exception as e:
+    print(f"!! Error when trying to save: {e}")
+finally:
+    conn.close()
 print(f'\n SUCCESS! Total posts collected: {len(df)}')
 

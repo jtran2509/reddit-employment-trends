@@ -1,5 +1,5 @@
 # Choose main operating system
-FROM python:3.9-slim
+FROM python:3.14.2-slim
 
 # Establish working directory
 WORKDIR /app
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8501
 
 # Run the application
-CMD ['streamlit', 'run', 'app.py', '--server.port=8501', '--server.address=0.0.0.0']
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
