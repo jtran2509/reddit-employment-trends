@@ -1,5 +1,7 @@
 # Environments
-reddit_employ/
+__pycache__/
+*.py[cod]
+*$py.class
 ENV/
 .env/
 
@@ -11,4 +13,8 @@ __pycache__/
 *.py[cod]
 
 # Data (Avoid pushing raw scrape data if it's too large)
-data/raw/
+data/raw/new_scrape_*.csv
+data/processed
+
+# has to have reddit_employment database to deploy on Streamlit
+!data/raw/reddit_employment.db
