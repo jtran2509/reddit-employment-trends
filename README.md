@@ -1,17 +1,34 @@
-# Comprehensive Market Intelligence Dashboard
-## Purpose of the project
+# Reddit Canada Employment Trend
+An end-to-end NLP & AI pipeline for analyzing job market insights from Reddit
+[Link to Live Dashboard](https://reddit-employment-trends.streamlit.app/)
+## Project overview
+- This project aims to scrape Reddit data and analyze it from the Reddit community in Canada to find out "pain points" of job seekers and immigrants
 
-## How it works
+## 🛠 Tech Stacks
+- Data Source: Reddit API (RAW JSON fetching)
+- Database: SQLite (Incremental Loading logic)
+- NLP: VADER, TextBlob (Sentiment Analysis), Google Translate API
+- AI model: BERT (facebook/bart-large-mini) for Zero-shot classification
+- Dashboard: Streamlit & Plotly
+
+## The Data Pipeline (Workflow)
 Every Monday, when new data coming in:
-1. Read newly-scraped data
-2. Run `clean_database.py` to remove any duplicates that resulted from scraping the same posts twice
-3. Read the old `reddit_master`
-4. Combine the new dataset with the old dataset
-5. Save them as the new `reddit_master`
+1. Scraping: Scrape new data, use `set` to filter duplicates to make sure it doesn't mess up with the dashboard.
+2. Text processing: Automatically translate Vietnamese posts to English and score the sentiment
+3. AI labeling: Run BERT model on the new posts only to save resources and time
+4. Data Merging: Update the newly-scraped dataset's label to the original database using update method
+5. Visualization: Visualize the trend in the job market using Streamlit Cloud
 
-## Tech Stacks
+If you want to see in details, [click here!](#data-pipeline-structure-specifically)
 
-## Data Pipeline Structure
+## Repository Structure
+- `dashboard.py`: Main file to run web dashboard
+- `scripts/`: contains all of the pipeline workflow (e.g. scraping data, cleaning text, etc.)
+- `data/`: where the database lies
+- `Dockerfile`: cau hinh environment to run the app. 
+
+
+## Data Pipeline Structure (SPECIFICALLY)
 1. Data Extraction (scrape_reddit.py)
 - Tasks: Scrape new data every monday
 - How: Use `set` to compare with SQLite & stop scraping the duplicate posts from the moment calling API. Delete `author` column and add `scrape_date` for easy retrieval.
@@ -45,22 +62,15 @@ Every Monday, when new data coming in:
 - `Lack of Canadian Experience` + (-0.9) VADER score: sending out 500 CV but got no calls back -> User is expressing their disappoinment.
 
 ## Streanlit dashboard
-1. Overview
-- Number of jobs posts this week
-- Subreddit activity
-- Most common job titles
+1. Market pulse
+- Community Sentiment Analysis overall
+- Top topics per week (via BERT topic)
+- Reddit's community attitude over a specific timeframe
 
-2. Location insights
+2. Technical Skills
+- Wordcloud: show users top keywords that was mentioned the most in the Reddit community
 - Map or bar chart of Canadian cities mentioned
 
-3. Salary insights
-- Salary distribution
-- High-risks salaries
-
-5. Topic trends
-- Topics per week (via BERTopic)
-- Rising and falling categories
-
-6. Raw Reddit explorer
-- Search bar
-- Filter by subreddits, keyword, city or scam flag
+3. Immigration Insights
+- Posts that are flagged as potential SCAMs
+- Percentage of Positive/Negative in terms of topics
