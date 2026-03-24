@@ -6,13 +6,31 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 import plotly.express as px
+import seaborn as sns
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 from datetime import datetime, timedelta
 import warnings 
+from scripts.chart_processor import get_profession_count, get_cities_count, generate_wordcloud, plot_bar_chart
 
 warnings.filterwarnings('ignore', category=UserWarning)
+
+professions_keywords = {
+    'IT/Tech': ['it', 'tech', 'software', 'developer', 'engineer', 'data scientist', 'programmer', 'cybersecurity', 'ai', 'devops', 'web development', 'frontend', 'backend', 'fullstack'],
+    'Marketing': ['marketing', 'digital marketing', 'seo', 'sem', 'social media', 'content creator', 'advertising', 'brand', 'campaign'],
+    'Cook/Chef': ['cook', 'chef', 'kitchen', 'restaurant', 'food service', 'hospitality'],
+    'Healthcare': ['nurse', 'doctor', 'physician', 'healthcare', 'medical', 'hospital', 'caregiver', 'pharmacist'],
+    'Trades': ['carpenter', 'electrician', 'plumber', 'welder', 'mechanic', 'construction'],
+    'Admin/Office': ['admin', 'administrative', 'assistant', 'office manager', 'receptionist'],
+    'Retail': ['retail', 'sales associate', 'cashier', 'store manager'],
+    'Logistics': ['driver', 'logistics', 'warehouse', 'supply chain', 'trucker'],
+    'Education': ['teacher', 'educator', 'professor', 'school', 'tutor'] }
+
+## Lists of big cities in Canada
+cities = ['Toronto', 'Vancouver', 'Montreal', 'Calgary', 'Edmonton', 'Ottawa', 'Winnipeg',
+          'Quebec City', 'Hamilton', 'Kitchener', 'London', 'Victoria', 'Halifax',
+          'Brossard', 'Brampton', 'Missisauga']
 
 #1. Set title
 ##. Set page layout 
@@ -33,12 +51,9 @@ def load_data():
 # Load dataset
 df = load_data()
 
+## SIDEBAR
 # Sidebar to choose Tab
 st.sidebar.title("🔍Filter Data")
-
-## Slider to let the user choose date
-min_date = df['date'].min()
-max_date = df['date'].max()
 
 ## Slider to let the user choose date
 min_date = df['date'].min()
@@ -67,34 +82,42 @@ subreddits = ['All'] + list(df['subreddit'].unique())
 selected_sub = st.sidebar.selectbox("Select Community (Subreddit):", subreddits)
 
 # Apply the filter to dataframe
-filtered_df = df.copy()
 if selected_sub != "All":
-    filtered_df = filtered_df[filtered_df['subreddit'] == selected_sub]
+    df_filtered = df_filtered[df_filtered['subreddit'] == selected_sub]
+
+### Get citites and professions counts
+profession_df = get_profession_count(df_filtered, professions_keywords)
+city_df = get_cities_count(df_filtered, cities)
 
 ### Main inference
 st.title(" 🍁 Analysis on Canadian job market and Immigrations")
-st.markdown("----")
 
 # ---TAB 1: MARKET PULSE ---
 if choice == "Market Pulse":
     st.header("📊 Market Pulse")
+    ## Assess community's overall attitude
+    if "vader_score" in df_filtered.columns:
+        sentiment_val = df_filtered['vader_score'].dropna().mean()
+        st.write("---")
+        st.subheader("Community Sentiment Analysis")
+        if sentiment_val > 0.2:
+            st.success(f"Overall, Reddit users is feeling **positive** ({sentiment_val:.2f})")
+        elif sentiment_val < -0.2:
+            st.success(f"Overall, Reddit users is feeling **worried** ({sentiment_val:.2f})")
+        else:
+            st.warning(f"Overall, Reddit users is feeling **neutral** ({sentiment_val:.2f})")
 
     col1, col2, col3 = st.columns([3, 2, 1])
     with col1:
-        st.subheader("Top Occupations Mentioned")
-        # Plot regarding top occupations mentioned
-        if "bert_topic" in df_filtered.columns:
-            topic_counts = df_filtered['bert_topic'].value_counts().reset_index()
-            topic_counts.columns = ['Topic', 'Count']
-            fig_topic = px.bar(topic_counts, x = "Count", y="Topic", orientation="h",
-                             color="Count", color_continuous_scale="Blues")
-            fig_topic.update_layout(yaxis={"categoryorder": "total ascending"})
-            st.plotly_chart(fig_topic, use_container_width=True)
+        # Charts of top occupations mentioned
+        st.subheader("Top Occupation Most Mentioned in Reddit")
+        fig_occ = plot_bar_chart(profession_df, "Count", "Profession",
+                                 "Top Occupations")
+        st.plotly_chart(fig_occ, use_container_width=True)
 
     with col2:
         st.subheader("Community's Attitude")
         vibe_counts = df_filtered['attitude'].value_counts().reset_index()
-        # vibe_counts.columns = ['Attitude', 'Count']
         if not vibe_counts.empty:
             fig_vibe = px.pie(vibe_counts, 
                               values="count", names="attitude",
@@ -106,17 +129,16 @@ if choice == "Market Pulse":
     st.markdown("---")
 
     st.subheader("Percentage of Positive/Negative in terms of Topics")
-    if not filtered_df.empty:
-        fig2 = px.histogram(filtered_df, x='bert_topic', color="attitude", barmode='group')
+    if not df_filtered.empty:
+        fig2 = px.histogram(df_filtered, x='bert_topic', color="attitude", barmode='group')
         fig2.update_layout(xaxis_tickangle=-45)
         st.plotly_chart(fig2, use_container_width=True)
-
-        
+    
 
 #--TAB 2: TECHNICAL SKILLS ----
 elif choice == "Technical Skills":
     st.header("🧠 Dynamic Keywords (WordCloud)")
-    st.write("Top Key Words that appear the most in job's discussion")
+    st.write(f"📊 Top Key Words that appear the most in subreddit {selected_sub}!")
     if not df_filtered.empty:
         with st.spinner("Generating fast Wordcloud"):
             custom_stopwords = set(STOPWORDS)
@@ -128,23 +150,28 @@ elif choice == "Technical Skills":
                 'thank', 'thanks', 'help', 'please', 'anyone', 'many', 'much', 'lot', 'also'
             }
             custom_stopwords.update(reddit_noises)
-            all_text = " ".join(str(text) for text in df_filtered['final_en_text'] if pd.notna(text))
-            wordcloud = WordCloud(width=1000, height=500, random_state=42, 
-                                background_color="white",
-                                stopwords=custom_stopwords,
-                                colormap="magma").generate(all_text)
-            plt.figure(figsize=(12, 6))
-            plt.imshow(wordcloud, interpolation="bilinear")
-            plt.axis("off")
+            if selected_sub == "All":
+                wc_fig = generate_wordcloud(df_filtered['final_en_text'], custom_stopwords)
+            else:
+            ## Filter data to generate specific WordCloud
+                wc_fig = generate_wordcloud(df_filtered[df_filtered['subreddit'] == selected_sub]['final_en_text'], custom_stopwords)
+                
             plt.title("What are Canadians & Immigrants talking about on Reddit",
-                    fontsize=16, fontweight="bold")
-            st.pyplot(plt.gcf())
+                        fontsize=16, fontweight="bold")
+            st.pyplot(wc_fig, use_container_width=True)
+        
+        # Bar plot showing Canadian cities that are mentioned the most
+    fig_cities = plot_bar_chart(city_df, "Count", "City",
+                                 "Top Canadian Cities Mentioned in Reddit Posts")
+    st.plotly_chart(fig_cities, use_container_width=True)
+   
+
 
 # --- TAB 3: IMMIGRATION INSIGHTS
 elif choice == "Immigration Insights":
     st.header("🛡️ LMIA issues & Immigrations-related")
     # Show examples of SCAM posts
-    st.subheader("🚨 Posts that are flagged as potential scams")
+    st.subheader("🚨 LMIA issues and job-related concern arising!")
 
     scam_keywords = ['scam', 'fake', 'loophole', 'fraud', 'illegal', 'pay']
         
@@ -153,23 +180,12 @@ elif choice == "Immigration Insights":
                     df_filtered['final_en_text'].str.contains(lm_scam_pattern, case=False)]
 
     if not lm_scam_posts.empty:
-        st.write(f"Found **{len(lm_scam_posts)}** high-risk posts. Below are a few recent examples:")
+        st.write(f"Found **{len(lm_scam_posts)}** posts about risks related to LMIA & SCAMs. Below are a few recent examples:")
         for i, row in lm_scam_posts.sort_values(by="date", ascending=False).head(5).iterrows():
             with st.expander(f"r/{row['subreddit']} | {row['date']} | VADER: {row['vader_score']:.2f}"):
                 st.markdown(f"**Title:** {row['title']}")
                 st.write(row['final_en_text'][:500] + "..." if len(str(row['final_en_text'])) > 500 else row['final_en_text'])
                 st.markdown(f"[Link to post]({row['url']})")
-
-    if "vader_score" in df_filtered.columns:
-        sentiment_val = df_filtered['vader_score'].dropna().mean()
-        st.write("---")
-        st.subheader("Community Sentiment Analysis")
-        if sentiment_val > 0.2:
-            st.success(f"Overall, Reddit users is feeling **positive** ({sentiment_val:.2f})")
-        elif sentiment_val < -0.2:
-            st.success(f"Overall, Reddit users is feeling **worried** ({sentiment_val:.2f})")
-        else:
-            st.warning(f"Overall, Reddit users is feeling **neutral** ({sentiment_val:.2f})")
 
     ### --- FINDING PAIN POINTS----###
     st.subheader("🕵️‍♂️ Deep Dive into Pain Points")
@@ -188,3 +204,12 @@ elif choice == "Immigration Insights":
         st.dataframe(pain_points_df[display_cols], use_container_width=True, height=300)
     else:
         st.success("Cannot find any pain points!")
+
+
+# # Plot regarding top occupations mentioned
+        # if "bert_topic" in df_filtered.columns:
+        #     topic_counts = df_filtered['bert_topic'].value_counts().reset_index()
+        #     topic_counts.columns = ['Topic', 'Count']
+        #     fig_topic = px.bar(topic_counts, x = "Count", y="Topic", orientation="h",
+        #                      color="Count", color_continuous_scale="Blues")
+        #     fig_topic.update_layout(yaxis={"categoryorder": "total ascending"})
