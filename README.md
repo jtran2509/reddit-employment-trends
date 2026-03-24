@@ -79,13 +79,13 @@ If you want to see in details, [click here!](#data-pipeline-structure-specifical
 ## Streanlit dashboard
 1. Market pulse
 - Community Sentiment Analysis overall
-- Top topics per week (via BERT topic)
-- Reddit's community attitude over a specific timeframe
+- Top Occupations Mentioned Most during the time frame
+- Reddit's community attitude over a specific timeframe (P/N)
 
 2. Technical Skills
 - Wordcloud: show users top keywords that was mentioned the most in the Reddit community
-- Map or bar chart of Canadian cities mentioned
+- Map or bar chart of Canadian cities mentioned in each Subreddit
 
 3. Immigration Insights
-- Posts that are flagged as potential SCAMs
-- Percentage of Positive/Negative in terms of topics
+- Posts that are flagged as potential SCAMs or SCAM-arising-concerns.
+- "Pain points" posts that talks about Reddits' users frustration according to each Subreddit topic
