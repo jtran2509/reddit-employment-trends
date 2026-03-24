@@ -53,13 +53,28 @@ If you want to see in details, [click here!](#data-pipeline-structure-specifical
 - How: Dashboard only "read" the clean data after all of the processing. WorkCloud is optimized to avoid overloading RAM.
 
 ## Advantage of Textblob and VADER
-- Vader: optimized for social media but VADER tends to amplify polarity and often categorize too many posts as positives
-- Textblob: offer a subjecctivity score (0.00 to 1.00) in addition to polarity (sentiment)
+- **VADER (Valence Aware Dictionary and Sentiment Reasoner)**: specfifically optimized for social media contexts. VADER can handle slang, capitalization (e.g. "FRUSTRATED), and emojis. However, VADER tends to amplify polarity and often categorize too many posts as positives
+- **Textblob**: to balance VADER'S polarity, TextBlob offers a subjecctivity score (0.00 to 1.00) in addition to polarity (sentiment), which is crucial for identifying "pain points"
 
 ## Defining "pain points"
 - A specific topic (BERT Topic) + Disappointment/Frustration (Negative Attitude/Negative VADER score)
 - e.g. `Salary and Cost of Living` + (-0.85) VADER score => Salary is not high/competitve enough and the user is expressing their frustration/disappointment/complaint. 
 - `Lack of Canadian Experience` + (-0.9) VADER score: sending out 500 CV but got no calls back -> User is expressing their disappoinment.
+
+## 🆙 What can be improved upon this work
+- When more & more dataset coming in with different languages, we can build more extensive text_pipeline that includes:
+* Classify languages for each posts that is not exclusive to Vietnamese but also other languages (Japanses, French, Spanish, Chinese, Korean, etc.)
+* Translating non-Englilsh sentence into English
+* Combine all of the post-translate-English sentences and do the BERT topic
+- Machine learning-wise:
+* Scam detector (Realistic Classifier): create a "Text" box so users can paste in the hiring posts of a recruiter and the model will give the results saying how confidence it's that this hiring message is a SCAM 
+* Time series analysis - whether there's an increase in number of posts about SCAMs. **Any relevance to the new immigration policies?**
+* Instead of VADER, can utilize HuggingFace pipeline for more nuanced resutls
+
+## 👨‍💼 Business Impact
+* **Strategic Insights for Newcomers**: provides a data driven reality check on the Canadian Job market, helping immigrants identify systemic barriers (e.g. Canadian experiments are the hot topic) and prepare more effective integration strategies
+* **Risk Mitigation & Fraud Awareness**: by analyzing frequency and sentiment trends, the pipeline has the potential to flag emerging recruitment scams, protecting vulnerable job seekers from financial and professional harm.
+* **Data-driven Advocacy for Policymakers**: offers evidence-based insights into the "pain points" of international talent. 
 
 ## Streanlit dashboard
 1. Market pulse

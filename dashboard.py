@@ -91,6 +91,7 @@ city_df = get_cities_count(df_filtered, cities)
 
 ### Main inference
 st.title(" 🍁 Analysis on Canadian job market and Immigrations")
+st.markdown(f"Analysis from **{len(df_filtered)}** posts on Reddit! Change the time you want to see with Slider on the left!")
 
 # ---TAB 1: MARKET PULSE ---
 if choice == "Market Pulse":
@@ -101,11 +102,11 @@ if choice == "Market Pulse":
         st.write("---")
         st.subheader("Community Sentiment Analysis")
         if sentiment_val > 0.2:
-            st.success(f"Overall, Reddit users is feeling **positive** ({sentiment_val:.2f})")
+            st.success(f"Overall, Reddit users is feeling **positive** during this time!")
         elif sentiment_val < -0.2:
-            st.success(f"Overall, Reddit users is feeling **worried** ({sentiment_val:.2f})")
+            st.success(f"Overall, Reddit users is feeling **worried** during this time!")
         else:
-            st.warning(f"Overall, Reddit users is feeling **neutral** ({sentiment_val:.2f})")
+            st.warning(f"Overall, Reddit users is feeling **neutral** during this time!")
 
     col1, col2, col3 = st.columns([3, 2, 1])
     with col1:

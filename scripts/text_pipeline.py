@@ -74,8 +74,11 @@ def get_new_unprocessed_data(db_path):
 
 def process_data_from_db(db_path):
     # print(f"🚀 Is pulling data from SQLite....")
+    conn = sqlite3.connect(db_path)
 
-     # 1. Combine title and selftext columns and clean
+    df = pd.read_sql_query("SELECT * FROM reddit_posts", conn)
+    conn.close()
+    # 1. Combine title and selftext columns and clean
     print(f"🧹 Is cleaning the text (delete link and remove redundant words...)")
     df['full_text'] = df['title'].fillna("") + ". "+ df['selftext'].fillna("")
     df['full_text'] = df['full_text'].apply(clean_text)
@@ -122,8 +125,8 @@ print(f"📊 Is analyzing users' emotions...")
 
 def label_vibe(score):
     if pd.isna(score): return "Neutral 😐"
-    if score > 0.4: return "Positive 😊"
-    elif score < -0.4: return "Worried/Negative 😟"
+    if score > 0.15: return "Positive 😊"
+    elif score < -0.15: return "Worried/Negative 😟"
     return "Neutral 😐"
 
 # Save newly clean dataset into a new table called "processed_posts"
@@ -157,7 +160,7 @@ if __name__ == "__main__":
     print("📊 Analyzing sentiments (VADER & TextBlob)...")
     df_new['vader_score'] = df_new['final_en_text'].apply(lambda x: analyzer.polarity_scores(x)['compound'])
     df_new['sentiment_score'] = df_new['final_en_text'].apply(lambda x: TextBlob(x).sentiment.polarity)
-    df_new['attitude'] = df_new['vader_score'].apply(label_vibe)
+    df_new['attitude'] = df_new['sentiment_score'].apply(label_vibe)
 
     #Check the overall results
     print("💾 Is updating the new dataset with `sentiment_score` & `attitude` scores...")
