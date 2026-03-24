@@ -1,7 +1,7 @@
 # Reddit Canada Employment Trend
 An end-to-end NLP & AI pipeline for analyzing job market insights from Reddit
 [Link to Live Dashboard](https://reddit-employment-trends.streamlit.app/)
-## Project overview
+## 📃 Project overview
 - This project aims to scrape Reddit data and analyze it from the Reddit community in Canada to find out "pain points" of job seekers and immigrants
 
 ## 🛠 Tech Stacks
@@ -11,7 +11,7 @@ An end-to-end NLP & AI pipeline for analyzing job market insights from Reddit
 - AI model: BERT (facebook/bart-large-mini) for Zero-shot classification
 - Dashboard: Streamlit & Plotly
 
-## The Data Pipeline (Workflow)
+## ⚙ The Data Pipeline (Workflow)
 Every Monday, when new data coming in:
 1. Scraping: Scrape new data, use `set` to filter duplicates to make sure it doesn't mess up with the dashboard.
 2. Text processing: Automatically translate Vietnamese posts to English and score the sentiment
@@ -21,14 +21,14 @@ Every Monday, when new data coming in:
 
 If you want to see in details, [click here!](#data-pipeline-structure-specifically)
 
-## Repository Structure
+## 📂 Repository Structure
 - `dashboard.py`: Main file to run web dashboard
 - `scripts/`: contains all of the pipeline workflow (e.g. scraping data, cleaning text, etc.)
 - `data/`: where the database lies
 - `Dockerfile`: cau hinh environment to run the app. 
 
 
-## Data Pipeline Structure (SPECIFICALLY)
+## 🧰 Data Pipeline Structure (SPECIFICALLY)
 1. Data Extraction (scrape_reddit.py)
 - Tasks: Scrape new data every monday
 - How: Use `set` to compare with SQLite & stop scraping the duplicate posts from the moment calling API. Delete `author` column and add `scrape_date` for easy retrieval.
@@ -52,11 +52,11 @@ If you want to see in details, [click here!](#data-pipeline-structure-specifical
 - Task: visualize the data on website
 - How: Dashboard only "read" the clean data after all of the processing. WorkCloud is optimized to avoid overloading RAM.
 
-## Advantage of Textblob and VADER
+## 👍 Advantage of Textblob and VADER
 - **VADER (Valence Aware Dictionary and Sentiment Reasoner)**: specfifically optimized for social media contexts. VADER can handle slang, capitalization (e.g. "FRUSTRATED), and emojis. However, VADER tends to amplify polarity and often categorize too many posts as positives
 - **Textblob**: to balance VADER'S polarity, TextBlob offers a subjecctivity score (0.00 to 1.00) in addition to polarity (sentiment), which is crucial for identifying "pain points"
 
-## Defining "pain points"
+## 🤕 Defining "pain points"
 - A specific topic (BERT Topic) + Disappointment/Frustration (Negative Attitude/Negative VADER score)
 - e.g. `Salary and Cost of Living` + (-0.85) VADER score => Salary is not high/competitve enough and the user is expressing their frustration/disappointment/complaint. 
 - `Lack of Canadian Experience` + (-0.9) VADER score: sending out 500 CV but got no calls back -> User is expressing their disappoinment.
@@ -76,7 +76,7 @@ If you want to see in details, [click here!](#data-pipeline-structure-specifical
 * **Risk Mitigation & Fraud Awareness**: by analyzing frequency and sentiment trends, the pipeline has the potential to flag emerging recruitment scams, protecting vulnerable job seekers from financial and professional harm.
 * **Data-driven Advocacy for Policymakers**: offers evidence-based insights into the "pain points" of international talent. 
 
-## Streanlit dashboard
+## 📖 Streanlit dashboard
 1. Market pulse
 - Community Sentiment Analysis overall
 - Top Occupations Mentioned Most during the time frame
