@@ -143,11 +143,12 @@ elif choice == "Technical Skills":
         with st.spinner("Generating fast Wordcloud"):
             custom_stopwords = set(STOPWORDS)
             reddit_noises = {'will', 'now', 'one', 'people', 'know', 'think', 'canada', 'work',
-                'just', 'don', 'really', 'even', 'much', 'time', 'well', 'going', 'right', 'year',
+                'just', 'don', 'really', 'even', 'much', 'time', 'well', 'going', 'right', 'year', 'years'
                 'see', 'want', 'make', 'got', 'something', 'anything', 'way', 'question', 'hours',
-                'look', 'say', 'said', 'still', 'someone', 'everyone', 'everything', 'might',
+                'look', 'say', 'said', 'still', 'someone', 'everyone', 'everything', 'might', 'option'
                 'take', 'need', 'back', 'good', 'find', 'feel', 'maybe', 'post', 'reddit', 'etc',
-                'thank', 'thanks', 'help', 'please', 'anyone', 'many', 'much', 'lot', 'also'
+                'thank', 'thanks', 'help', 'please', 'anyone', 'many', 'much', 'lot', 'also', 'day',
+                'week', 'go', 'ask', 'used', 'first', 'hello', 'today', 'show'
             }
             custom_stopwords.update(reddit_noises)
             if selected_sub == "All":
