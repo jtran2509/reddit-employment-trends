@@ -132,7 +132,7 @@ if choice == "Market Pulse":
     st.subheader("Percentage of Positive/Negative in terms of Topics")
     if not df_filtered.empty:
         fig2 = px.histogram(df_filtered, x='bert_topic', color="attitude", barmode='group')
-        fig2.update_layout(xaxis_tickangle=-45)
+        fig2.update_layout(xaxis_tickangle=-45, xaxis_title="Discussion Topics")
         st.plotly_chart(fig2, use_container_width=True)
     
 
@@ -201,9 +201,17 @@ elif choice == "Immigration Insights":
         pain_points_df = pain_points_df.sort_values(by="vader_score", ascending=True)
 
     # Display table
-    display_cols= ['title', 'subreddit', 'bert_topic', 'attitude', 'vader_score']
+    display_cols= ['title', 'subreddit', 'bert_topic', 'attitude']
+    friendly_names = {
+        "title": "Post Title",
+        "subreddit": "Community (Subreddit)",
+        "bert_topic": "Discussion Topic",
+        "attitude": "Community Sentiment"
+    }
+    # Filter dataframe and rename the columns simultaneously
+    display_df = pain_points_df[display_cols].rename(columns=friendly_names)
     if not pain_points_df.empty:
-        st.dataframe(pain_points_df[display_cols], use_container_width=True, height=300)
+        st.dataframe(display_df, use_container_width=True, height=300)
     else:
         st.success("Cannot find any pain points!")
 
