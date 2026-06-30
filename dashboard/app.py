@@ -52,6 +52,11 @@ with col1:
     st.markdown('<div class="pulse-header">', unsafe_allow_html=True)
     st.markdown('<h1 style="margin:0;">📊 Reddit Employment Pulse</h1>', unsafe_allow_html=True)
     st.markdown('<span class="live-badge">🔴 LIVE</span>', unsafe_allow_html=True)
+
+    st.link_button(
+        label = "📒 Open **Dashboard Power BI** (prototype version)",
+        url="https://github.com/jtran2509/reddit-employment-trends/blob/main/dashboard/reddit_dashboard.pdf"
+    )
     st.markdown('</div>', unsafe_allow_html=True)
 with col2:
     st.markdown(f'<p style="color:#a0a0b0; text-align:right;">Last updated: {datetime.now().strftime("%b %d, %H:%M")}<br>{len(df):,} posts analyzed</p>', unsafe_allow_html=True)
