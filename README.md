@@ -1,4 +1,25 @@
 # Reddit Canada Employment Trend
+<!-- Badges Section -->
+<p align="center">
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python Version">
+  </a>
+  <a href="https://streamlit.io/">
+    <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white" alt="Streamlit">
+  </a>
+  <a href="https://huggingface.co/facebook/bart-large-mnli">
+    <img src="https://img.shields.io/badge/BERT-BART--large--mnli-yellow?style=for-the-badge&logo=HuggingFace&logoColor=white" alt="BERT Model">
+  </a>
+  <a href="https://www.microsoft.com/en-us/power-platform/products/power-bi">
+    <img src="https://img.shields.io/badge/Power%20BI-Dashboard-FFB81C?style=for-the-badge&logo=Power%20BI&logoColor=white" alt="Power BI">
+  </a>
+  <a href="https://www.sqlite.org/">
+    <img src="https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=SQLite&logoColor=white" alt="SQLite">
+  </a>
+  <a href="https://github.com/your-username/your-repo-name/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
+  </a>
+</p>
 An end-to-end NLP & AI pipeline for analyzing job market insights from Reddit
 
 # Demo link: [Reddit Employment Trends](https://reddit-employment-trends-c7mf5bu4wr68bgmejrorqu.streamlit.app/)
