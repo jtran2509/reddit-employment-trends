@@ -3,6 +3,8 @@ An end-to-end NLP & AI pipeline for analyzing job market insights from Reddit
 
 # Demo link: [Reddit Employment Trends](https://reddit-employment-trends-c7mf5bu4wr68bgmejrorqu.streamlit.app/)
 
+![Reddit Employment Trend Demo](https://i.imgur.com/NIjRIfT.gif)
+
 ## 📃 Project overview
 - This project aims to scrape Reddit data and analyze it from the Reddit community in Canada to find out "pain points" of job seekers and immigrants
 
