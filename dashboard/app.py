@@ -55,7 +55,7 @@ with col1:
 
     st.link_button(
         label = "📒 Open **Dashboard Power BI** (prototype version)",
-        url="https://github.com/jtran2509/reddit-employment-trends/blob/main/dashboard/reddit_dashboard.pdf"
+        url="https://github.com/jtran2509/reddit-employment-trends/blob/main/dashboard/PDF_reddit_dashboard.pdf"
     )
     st.markdown('</div>', unsafe_allow_html=True)
 with col2:
