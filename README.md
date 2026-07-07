@@ -27,7 +27,7 @@ An end-to-end NLP & AI pipeline for analyzing job market insights from Reddit
 ![Reddit Employment Trend Demo](https://i.imgur.com/NIjRIfT.gif)
 
 ## 📃 Project overview
-- This project aims to scrape Reddit data and analyze it from the Reddit community in Canada to find out "pain points" of job seekers and immigrants
+- This project aims to help newcomers/immigrants get a better understanding of the Canada job market by scraping Reddit data and analyze it from the Reddit community in Canada. The ultimate purpose is to find out the "pain points" of job seekers and immigrants
 
 ## 🛠 Tech Stacks
 - Data Source: Reddit API (RAW JSON fetching)
@@ -44,7 +44,7 @@ Every Monday, when new data coming in:
 4. Data Merging: Update the newly-scraped dataset's label to the original database using update method
 5. Visualization: Visualize the trend in the job market using Streamlit Cloud
 
-If you want to see in details, [click here!](#data-pipeline-structure-specifically)
+If you want to see the details, [click here!](#data-pipeline-structure-specifically)
 
 ## 📂 Repository Structure
 - `dashboard.py`: Main file to run web dashboard
@@ -55,19 +55,19 @@ If you want to see in details, [click here!](#data-pipeline-structure-specifical
 
 ## 🧰 Data Pipeline Structure (SPECIFICALLY)
 1. Data Extraction (scrape_reddit.py)
-- Tasks: Scrape new data every monday
-- How: Use `set` to compare with SQLite & stop scraping the duplicate posts from the moment calling API. Delete `author` column and add `scrape_date` for easy retrieval.
-- Output: Append the newly-scraped data into the existing database `reddit_posts` 
+- Tasks: Scrape new data every Monday (in planning phase)
+- How: Use `set` to compare with SQLite & stop scraping duplicate posts from the moment the API. Delete the `author` column and add `scrape_date` for easy retrieval.
+- Output: Append the newly scraped data into the existing database `reddit_posts`  - incremental loading
 
-2. Data Tranformation and Text Processing (text_pipeline.py)
+2. Data Transformation and Text Processing (text_pipeline.py)
 - Tasks: Cleaning and scoring basic sentiments
 - How: Only choose the posts that are not yet scored. Automatically locate posts in Vietnamese and translate to English. Use VADER score, TextBlob and assign `attitude` (positive, negative or neutral)
 - Output: Append the scores to the table `processed_posts`
 
 3. AI categorization (bert_analysis.py)
-- Tasks: Use deep-learning model (BART-large-mnli) to categorize topic
-- How: Use SQL to retrieve the newly-scraped data without the bert topic, use AI to categorize the newly scraped-data only
-- Output: Save a new file that contains categories results
+- Tasks: Use deep-learning model (BART-large-mnli) to categorize topics
+- How: Use SQL to retrieve the newly scraped data without the bert topic, use AI to categorize the newly scraped-data only
+- Output: Save a new file that contains categories' results
 
 4. Data Merging (merge_bert.py)
 - Tasks: Update the new result and append it to the original database
@@ -77,9 +77,9 @@ If you want to see in details, [click here!](#data-pipeline-structure-specifical
 - Task: visualize the data on website
 - How: Dashboard only "read" the clean data after all of the processing. WorkCloud is optimized to avoid overloading RAM.
 
-## 👍 Advantage of Textblob and VADER
-- **VADER (Valence Aware Dictionary and Sentiment Reasoner)**: specfifically optimized for social media contexts. VADER can handle slang, capitalization (e.g. "FRUSTRATED), and emojis. However, VADER tends to amplify polarity and often categorize too many posts as positives
-- **Textblob**: to balance VADER'S polarity, TextBlob offers a subjecctivity score (0.00 to 1.00) in addition to polarity (sentiment), which is crucial for identifying "pain points"
+## 👍 Advantage of TextBlob and VADER
+- **VADER (Valence Aware Dictionary and Sentiment Reasoner)**: specfifically optimized for social media contexts. VADER can handle slang, capitalization (e.g. "FRUSTRATED), and emojis. However, VADER tends to amplify polarity and often categorize too many posts as positive
+- ** TextBlob **: to balance VADER'S polarity, TextBlob offers a subjectivity score (0.00 to 1.00) in addition to polarity (sentiment), which is crucial for identifying "pain points"
 
 ## 🤕 Defining "pain points"
 - A specific topic (BERT Topic) + Disappointment/Frustration (Negative Attitude/Negative VADER score)
@@ -92,12 +92,12 @@ If you want to see in details, [click here!](#data-pipeline-structure-specifical
 * Translating non-Englilsh sentence into English
 * Combine all of the post-translate-English sentences and do the BERT topic
 - Machine learning-wise:
-* Scam detector (Realistic Classifier): create a "Text" box so users can paste in the hiring posts of a recruiter and the model will give the results saying how confidence it's that this hiring message is a SCAM 
-* Time series analysis - whether there's an increase in number of posts about SCAMs. **Any relevance to the new immigration policies?**
-* Instead of VADER, can utilize HuggingFace pipeline for more nuanced resutls
+* Scam detector (Realistic Classifier): create a "Text" box so users can paste in the hiring posts of a recruiter, and the model will give the results saying how confident it is that this hiring message is a SCAM 
+* Time series analysis - whether there's an increase in the number of posts about SCAMs. **Any relevance to the new immigration policies?**
+* Instead of VADER, can utilize HuggingFace pipeline for more nuanced results
 
 ## 👨‍💼 Business Impact
-* **Strategic Insights for Newcomers**: provides a data driven reality check on the Canadian Job market, helping immigrants identify systemic barriers (e.g. Canadian experiments are the hot topic) and prepare more effective integration strategies
+* **Strategic Insights for Newcomers**: provides a data-driven reality check on the Canadian Job market, helping immigrants identify systemic barriers (e.g. Canadian experiments are the hot topic) and prepare more effective integration strategies
 * **Risk Mitigation & Fraud Awareness**: by analyzing frequency and sentiment trends, the pipeline has the potential to flag emerging recruitment scams, protecting vulnerable job seekers from financial and professional harm.
 * **Data-driven Advocacy for Policymakers**: offers evidence-based insights into the "pain points" of international talent. 
 
